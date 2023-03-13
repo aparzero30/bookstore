@@ -61,7 +61,7 @@ UI -> User : //displays the new book on booklist
 ==== Remove Book from BookList====
 User -> UI : //selects a book to remove
 UI -> BookList : DELETE/book:id
-Orders ->  UI: 204 no content
+BookList ->  UI: 204 no content
 UI -> User : //shows book no longer exist
 
 
