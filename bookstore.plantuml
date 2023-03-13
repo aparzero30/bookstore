@@ -1,0 +1,76 @@
+@startuml Bookstore
+
+
+
+actor User
+participant UI
+participant Orders
+participant BookList
+participant Payments
+participant UserList
+participant Gateway
+
+==== Login====
+User -> UI: //input credentials
+UI -> UserList: GET/user  //check if user exist
+UserList -> UI : 200
+UI -> User : //shows login
+
+==== Display Books ====
+UI-> BookList : GET/books  //get the book list
+BookList -> UI:200  //response from get 
+User -> UI: // clicks a book
+UI-> BookList : GET/book  //get the book based on the book clicked
+BookList -> UI:200  //response from get
+UI -> Orders: POST/Order  //create order
+
+
+==== Create Order ====
+Orders -> BookList: GET/book:id 
+BookList -> Orders: 200
+Orders -> UI: 201 (meaning created)
+
+
+==== Add Book to Order ====
+User->UI: //selects a book 
+UI -> Orders : POST/order:id/book
+Orders -> BookList: Get /product:id
+BookList -> Orders: 200
+Orders ->  UI: 201 created
+UI -> User : //shows item is in order
+
+
+==== Increase Quantity ====
+User -> UI : //clicks an item in Orders
+UI -> Orders : PUT/order:id/item:id
+Orders ->  UI: 204 no content
+UI -> User : //shows item with increased quantity
+
+==== Remove Quantity ====
+User -> UI : //clicks an item in Orders
+UI -> Orders : DELETE/order:id
+Orders ->  UI: 204 no content
+UI -> User : //shows item no longer exist
+
+==== Add Book  to BookList====
+User -> UI : //give the data about a new book
+UI -> BookList : POST/book
+BookList ->  UI: 201 created
+UI -> User : //displays the new book on booklist
+
+==== Remove Book from BookList====
+User -> UI : //selects a book to remove
+UI -> BookList : DELETE/book:id
+Orders ->  UI: 204 no content
+UI -> User : //shows book no longer exist
+
+
+==== Pay ====
+UI -> Payments : Post/payment
+Payments ->  Gateway: Post/payment
+Gateway -> Payments: 200
+Payments ->  Gateway: Put/payment:id
+Gateway -> Payments: 204 no content
+
+
+@enduml 
